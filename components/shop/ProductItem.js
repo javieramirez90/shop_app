@@ -1,22 +1,44 @@
 import React from 'react';
-import { View, Text, Image, Button, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  Button,
+  TouchableOpacity,
+  TouchableNativeFeedback,
+  Platform,
+  StyleSheet
+} from 'react-native';
+
 import Colors from '../../constants/Colors';
 
 const ProductItem = props => {
+  let TouchableComponent = TouchableOpacity;
+
+  if(Platform.OS === 'android' && Platform.Version >= 21) {
+    TouchableComponent = TouchableNativeFeedback;;
+  }
+
   const { item } = props;
 
   return(
     <View style={styles.product}>
-      <View style={styles.imageContainer}>
-        <Image style={styles.image} source={{uri: item.imageUrl}}/>
-      </View>
-      <View style={styles.details}>
-        <Text style={styles.title} >{item.title.toUpperCase()}</Text>
-        <Text style={styles.price} >$ {item.price.toFixed(2)}</Text>
-      </View>
-      <View style={styles.actions}>
-        <Button color={Colors.primary} title="View Details" onPress={props.onViewDetail}/>
-        <Button color={Colors.primary} title="To Cart" onPress={props.onAddToCart}/>
+      <View style={styles.touchable}>
+        <TouchableComponent onPress={props.onViewDetail} useForeground>
+          <View>
+            <View style={styles.imageContainer}>
+              <Image style={styles.image} source={{uri: item.imageUrl}}/>
+            </View>
+            <View style={styles.details}>
+              <Text style={styles.title} >{item.title.toUpperCase()}</Text>
+              <Text style={styles.price} >$ {item.price.toFixed(2)}</Text>
+            </View>
+            <View style={styles.actions}>
+              <Button color={Colors.primary} title="View Details" onPress={props.onViewDetail}/>
+              <Button color={Colors.primary} title="To Cart" onPress={props.onAddToCart}/>
+            </View>
+          </View>
+        </TouchableComponent>
       </View>
     </View>
   );
@@ -32,7 +54,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: 'white',
     height: 300,
-    margin: 20
+    margin: 20,
+  },
+  touchable: {
+    borderRadius: 10,
+    overflow: 'hidden'
   },
   imageContainer: {
     width: '100%',
@@ -51,10 +77,12 @@ const styles = StyleSheet.create({
     padding: 10
   },
   title: {
+    fontFamily: 'open-sans-bold',
     fontSize: 18,
-    marginVertical: 4
+    marginVertical: 2
   },
   price: {
+    fontFamily: 'open-sans',
     fontSize: 14,
     color: '#888'
   },

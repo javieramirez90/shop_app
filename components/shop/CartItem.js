@@ -1,15 +1,22 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Platform, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Platform,
+  StyleSheet
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 const CartItem = props => {
   return (
     <View style={styles.cartItem}>
-      <Text style={styles.itemData}>
-        <Text style={styles.quantity}>QTY:</Text><Text style={styles.mainText}>TITLE:</Text>
-      </Text>
       <View style={styles.itemData}>
-        <Text style={styles.mainText}>$AMT</Text>
+        <Text style={styles.quantity}>{props.item.quantity}  </Text>
+        <Text style={styles.mainText}>{props.item.productTitle}</Text>
+      </View>
+      <View style={styles.itemData}>
+        <Text style={styles.mainText}>${props.item.sum.toFixed(2)}</Text>
         <TouchableOpacity onPress={props.onRemove} style={styles.deleteButton}>
           <Ionicons
             name={Platform.OS === 'android' ? 'md-trash' : 'ios-trash'}

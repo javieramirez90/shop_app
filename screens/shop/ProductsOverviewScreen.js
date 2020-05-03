@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, Platform } from 'react-native';
+import { FlatList, Alert, Platform } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
@@ -31,6 +31,10 @@ const ProductsOverviewScreen = props => {
         }}
         onAddToCart={() => {
           dispatch(cartActions.addToCart(itemData.item));
+          Alert.alert(
+            'Cart',
+            `${itemData.item.title} added to cart`
+          );
         }}
       />)
       }

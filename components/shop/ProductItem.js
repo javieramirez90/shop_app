@@ -30,8 +30,8 @@ const ProductItem = props => {
               <Image style={styles.image} source={{uri: item.imageUrl}}/>
             </View>
             <View style={styles.details}>
-              <Text style={styles.title} >{item.title.toUpperCase()}</Text>
-              <Text style={styles.price} >$ {item.price.toFixed(2)}</Text>
+              <Text style={styles.title} >{item.title?.toUpperCase() || item.productTitle?.toUpperCase()}</Text>
+              <Text style={styles.price} >$ {item.price?.toFixed(2) || item.productPrice?.toFixed(2)}</Text>
             </View>
             <View style={styles.actions}>
               <Button color={Colors.primary} title="View Details" onPress={props.onViewDetail}/>

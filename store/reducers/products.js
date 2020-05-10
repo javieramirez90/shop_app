@@ -11,10 +11,10 @@ export default (state= initialState, action) => {
   switch(action.type) {
     case CREATE_PRODUCT:
       const newProduct = new Product(
-        new Date.toString(),
+        new Date().toString(),
         'u1',
         action.productData.title,
-        action.productData.imageURL,
+        action.productData.imageUrl,
         action.productData.description,
         action.productData.price
         );
@@ -29,7 +29,7 @@ export default (state= initialState, action) => {
         action.pid,
         state.userProducts[productIndex].ownerId,
         action.productData.title,
-        action.productData.imageURL,
+        action.productData.imageUrl,
         action.productData.description,
         state.userProducts[productIndex].price
         );

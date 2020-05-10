@@ -1,15 +1,28 @@
 import React from 'react';
-import { FlatList, Alert, Platform } from 'react-native';
+import { FlatList, Alert, Button, Platform } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
 import ProductItem from '../../components/shop/ProductItem';
 import * as cartActions from '../../store/actions/cart';
 import HeaderButton from '../../components/UI/HeaderButton';
+import Colors from '../../constants/Colors';
 
 const ProductsOverviewScreen = props => {
   const products = useSelector(state => state.products.availableProducts);
   const dispatch =  useDispatch();
+
+  const seletItemHandler = (id, title) => {
+    props.navigation.navigate(
+      {
+        routeName: 'ProductDetail',
+        params: {
+          productId: id,
+          productTitle: title,
+          }
+      }
+    )
+  };
 
   return(
     <FlatList
@@ -18,26 +31,30 @@ const ProductsOverviewScreen = props => {
       renderItem={itemData => (
       <ProductItem
         item={itemData.item}
-        onViewDetail={() => {
-          props.navigation.navigate(
-            {
-              routeName: 'ProductDetail',
-              params: {
-                productId: itemData.item.id,
-                productTitle: itemData.item.title,
-                }
-            }
-          )
+        onSelect={() => {
+          seletItemHandler(itemData.item.id, itemData.item.title)
         }}
-        onAddToCart={() => {
-          dispatch(cartActions.addToCart(itemData.item));
-          Alert.alert(
-            'Cart',
-            `${itemData.item.title} added to cart`
-          );
+      >
+        <Button
+          color={Colors.primary}
+          title="View Details"
+          onPress={() => {
+          seletItemHandler(itemData.item.id, itemData.item.title)
         }}
-      />)
-      }
+        />
+        <Button
+          color={Colors.primary}
+          title="To Cart"
+          onPress={() => {
+            dispatch(cartActions.addToCart(itemData.item));
+            Alert.alert(
+              'Cart',
+              `${itemData.item.title} added to cart`
+            );
+          }}
+        />
+      </ProductItem>
+      )}
     />
   );
 };

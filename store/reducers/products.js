@@ -1,5 +1,10 @@
 import PRODUCTS from '../../data/demo-data';
-import { CREATE_PRODUCT, UPDATE_PRODUCT, DELETE_PRODUCT } from '../actions/products';
+import {
+  CREATE_PRODUCT,
+  UPDATE_PRODUCT,
+  DELETE_PRODUCT,
+  SET_PRODUCTS
+} from '../actions/products';
 import Product from '../../models/product';
 
 const initialState = {
@@ -9,6 +14,11 @@ const initialState = {
 
 export default (state= initialState, action) => {
   switch(action.type) {
+    case SET_PRODUCTS:
+    return {
+      availableProducts: action.products,
+      userProducts: action.products.filter(product => product.ownerId === 'u1')
+    }
     case CREATE_PRODUCT:
       const newProduct = new Product(
         new Date().toString(),

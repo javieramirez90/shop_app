@@ -1,16 +1,43 @@
-import React from 'react';
-import { FlatList, Alert, Button, Platform } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+// We use useCallback to avoid to fall in an infinite loop
+import { View, FlatList, Alert, Button, ActivityIndicator, Platform, StyleSheet, Text } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
 import ProductItem from '../../components/shop/ProductItem';
 import * as cartActions from '../../store/actions/cart';
+import * as productsActions from '../../store/actions/products';
 import HeaderButton from '../../components/UI/HeaderButton';
 import Colors from '../../constants/Colors';
 
 const ProductsOverviewScreen = props => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
   const products = useSelector(state => state.products.availableProducts);
   const dispatch =  useDispatch();
+
+  const loadProducts = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      await dispatch(productsActions.fetchProducts());
+    } catch(err) {
+      setError(err.message);
+    }
+    setIsLoading(false);
+  }, [dispatch, setIsLoading, setError]);
+
+  useEffect(() => {
+    loadProducts();
+  }, [dispatch, loadProducts]);
+
+  useEffect(() => {
+    // subscription
+    const willFocusSub = props.navigation.addListener('willFocus', loadProducts);
+
+    return () => {
+      willFocusSub.remove();
+    };
+  }, [loadProducts ]);
 
   const seletItemHandler = (id, title) => {
     props.navigation.navigate(
@@ -22,6 +49,34 @@ const ProductsOverviewScreen = props => {
           }
       }
     )
+  };
+
+  if(error) {
+    return (
+      <View style={styles.spinner}>
+        <Text>An error ocurred!</Text>
+        <Button title="Reload" onPress={loadProducts} color={Colors.primary}/>
+      </View>
+    );
+  }
+
+  if(isLoading) {
+    return (
+      <View style={styles.spinner}>
+        <ActivityIndicator
+          size="large"
+          color={Colors.primary}
+        />
+      </View>
+    );
+  };
+
+  if(!isLoading && products.length === 0) {
+    return(
+      <View style={styles.spinner}>
+        <Text>No products found. Start adding some!</Text>
+      </View>
+    );
   };
 
   return(
@@ -86,5 +141,12 @@ ProductsOverviewScreen.navigationOptions = navData => {
       )
   };
 }
+const styles = StyleSheet.create({
+  spinner: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+})
 
 export default ProductsOverviewScreen;

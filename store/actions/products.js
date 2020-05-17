@@ -42,8 +42,9 @@ export const fetchProducts = () => {
 };
 
 export const deleteProduct = productId => {
-  return async dispatch => {
-    const response = await fetch(urlDB + `products/${productId}.json`, {
+  return async (dispatch, getState) => {
+    const token =  getState().auth.token;
+    const response = await fetch(urlDB + `products/${productId}.json?auth=${token}`, {
       method: 'DELETE'
     });
 
@@ -56,10 +57,9 @@ export const deleteProduct = productId => {
 };
 
 export const createProduct = (title, description, imageUrl, price) => {
-  return async dispatch => {
-    //any async code you want!! you can execute here.
-    // The json is an specfic thing of firebase
-    const response = await fetch(urlDB + 'products.json', {
+  return async (dispatch, getState) => {
+    const token =  getState().auth.token;
+    const response = await fetch(urlDB + `products.json?auth=${token}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -88,9 +88,9 @@ export const createProduct = (title, description, imageUrl, price) => {
 };
 
 export const updateProduct = (id, title, description, imageUrl) => {
-  return async dispatch => {
-    console.log("UPDATING...")
-    const response = await fetch(urlDB + `products/${id}.json`, {
+  return async (dispatch, getState) => {
+    const token =  getState().auth.token;
+    const response = await fetch(urlDB + `products/${id}.json?auth=${token}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'
@@ -103,7 +103,9 @@ export const updateProduct = (id, title, description, imageUrl) => {
     });
 
     if(!response.ok) {
-      throw new Error('Something went wrong!');
+      const errorResData = await response.json();
+      console.log(errorResData);
+      throw new Error(errorResData.error.message);
     };
 
     dispatch({

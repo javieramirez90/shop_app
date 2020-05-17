@@ -3,7 +3,7 @@ export const LOGIN = 'LOGIN';
 
 export const signup = (email, password) => {
   return async dispatch => {
-    const response = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBU7uJNDl3C2_1iZevr7J9KLNXy5bVBhck', {
+    const response = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -17,22 +17,24 @@ export const signup = (email, password) => {
 
     if(!response.ok) {
       const errorResData = await response.json();
-      console.log(errorResData);
+      // console.log(errorResData);
       throw new Error(errorResData.error.message);
     }
 
     const resData = await response.json();
-    console.log(resData)
+    // console.log(resData)
 
     dispatch({
-      type: SIGNUP
+      type: SIGNUP,
+      token: resData.idToken,
+      userId: resData.localId
     });
   };
 };
 
 export const login = (email, password) => {
   return async dispatch => {
-    const response = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBU7uJNDl3C2_1iZevr7J9KLNXy5bVBhck', {
+    const response = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -46,15 +48,17 @@ export const login = (email, password) => {
 
     if(!response.ok) {
       const errorResData = await response.json();
-      console.log(errorResData);
+      // console.log(errorResData);
       throw new Error(errorResData.error.message);
     }
 
     const resData = await response.json();
-    console.log(resData)
+    // console.log(resData)
 
     dispatch({
-      type: LOGIN
+      type: LOGIN,
+      token: resData.idToken,
+      userId: resData.localId
     });
   };
 };

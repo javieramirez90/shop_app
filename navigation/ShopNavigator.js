@@ -1,11 +1,12 @@
 import React from 'react'
 
 import { createStackNavigator } from 'react-navigation-stack';
-import { createDrawerNavigator } from 'react-navigation-drawer';
+import { createDrawerNavigator, DrawerItems } from 'react-navigation-drawer';
 import { createSwitchNavigator } from 'react-navigation'
 import { createAppContainer } from 'react-navigation';
-import { Platform } from 'react-native';
+import { View, Platform, SafeAreaView, Button } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useDispatch } from 'react-redux';
 
 import AuthScreen from '../screens/user/AuthScreen';
 import ProductsOverviewScreen from '../screens/shop/ProductsOverviewScreen';
@@ -16,6 +17,7 @@ import UserProductsScreen from '../screens/user/UserProductsScreen';
 import EditProductScreen from '../screens/user/EditProductScreen';
 import StartupScreen from '../screens/StartupScreen';
 import Colors from '../constants/Colors';
+import * as authActions from '../store/actions/auth'
 
 const defaultNavOptions = {
   headerStyle: {
@@ -88,6 +90,23 @@ const ShopNavigator =  createDrawerNavigator({
 }, {
   contentOptions: {
     activeTintColor: Colors.primary
+  },
+  contentComponent: props => {
+    const dispatch = useDispatch();
+    return(
+      <View style={{flex: 1, paddingTop: 20}}>
+        <SafeAreaView
+          forceInset={{top: 'always', horizontal: 'never'}}
+        >
+          <DrawerItems {...props} />
+          <Button title="Logout" color={Colors.primary} onPress={()=>{
+            dispatch(authActions.logout());
+            // props.navigation.navigate('Auth');
+          }}/>
+        </SafeAreaView>
+
+      </View>
+    )
   }
 });
 

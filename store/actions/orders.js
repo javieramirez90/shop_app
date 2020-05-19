@@ -6,10 +6,11 @@ export const SET_ORDERS = 'SET_ORDERS';
 const urlDB = 'https://shop-app-server.firebaseio.com/'
 
 export const fecthOrders = () => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
+    const userId = getState().auth.userId
     try {
       const response =  await fetch(
-        urlDB + 'orders/u1.json'
+        urlDB + `orders/${userId}.json`
       );
 
       if(!response.ok) {
@@ -41,8 +42,9 @@ export const fecthOrders = () => {
 export const addOrder = (cartItems, totalAmount) => {
   return async (dispatch, getState) => {
     const token =  getState().auth.token;
+    const userId =  getState().auth.userId;
     const date = new Date()
-    const response = await fetch(urlDB + `orders/u1.json?auth=${token}`, {
+    const response = await fetch(urlDB + `orders/${userId}.json?auth=${token}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
